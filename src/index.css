@@ -1,0 +1,55 @@
+:root {
+  --brand-emerald: #0a957d;
+  --brand-emerald-light: #9ABF88;
+  --primary: #006857;
+  --on-primary: #ffffff;
+  --surface: #f9f9f9;
+  --surface-container-low: #f3f3f4;
+  --surface-container-highest: #e2e2e2;
+  --on-surface: #1a1c1c;
+  --on-surface-variant: #3d4945;
+  --outline: #6d7a75;
+  --outline-variant: #bcc9c4;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  
+  font: 16px/160% var(--font-body);
+  color: var(--on-surface);
+  background: var(--surface);
+  color-scheme: light;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
