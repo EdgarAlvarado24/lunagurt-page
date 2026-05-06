@@ -167,7 +167,7 @@ function Step3({ onSubmit, onBack }) {
     setFormData(prev => ({ ...prev, [name]: value }))
   }, [])
   
-  const handleSubmit = useCallback((e) => {
+  const handleSubmitForm = useCallback((e) => {
     e.preventDefault()
     if (formData.name && formData.address) {
       onSubmit(formData)
@@ -180,7 +180,7 @@ function Step3({ onSubmit, onBack }) {
         <h2 className="form-title">Detalles del Pedido</h2>
         <p className="form-subtitle">Completa tus datos para que podamos llevarte el sabor del campo.</p>
         
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitForm}>
           <div className="form-group">
             <label className="form-label" htmlFor="name">Nombre Completo *</label>
             <input
@@ -296,12 +296,12 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
   
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback((formData) => {
     const message = `🍧 *Nuevo Pedido LunaGurt* %0A%0A*Cliente:* ${formData.name}%0A*Dirección:* ${formData.address}${formData.phone ? '%0A*Teléfono:* ' + formData.phone : ''}%0A%0A*Pedido:*%0A- ${quantities.individual}x Yogur Individual ($${quantities.individual * 5})%0A- ${quantities.duo}x Dúo ($${quantities.duo * 10})%0A- ${quantities.family}x Pack Familiar ($${quantities.family * 13})%0A%0A*Sabores:* ${selectedFlavors.join(', ')}%0A%0A*Total yogures:* ${totalYogurts}%0A*Total:* $${quantities.individual * 5 + quantities.duo * 10 + quantities.family * 13}`
     
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank')
     setShowModal(true)
-  }, [formData, quantities, selectedFlavors, totalYogurts])
+  }, [quantities, selectedFlavors, totalYogurts])
   
   const closeModal = useCallback(() => {
     setShowModal(false)
