@@ -15,9 +15,9 @@ const FLAVORS = [
 ]
 
 const PRODUCTS = [
-  { id: 'individual', name: 'Yogur Individual', desc: 'El sabor puro de la naturaleza en un frasco de 250ml', price: 5, emoji: '🧋', featured: false },
-  { id: 'duo', name: 'Dúo de Yogures', desc: 'Ideal para compartir o disfrutar en dos momentos', price: 10, emoji: '🍯', featured: false },
-  { id: 'family', name: 'Pack Familiar (Combo 3)', desc: 'Tres yogures variados para toda la familia', price: 13, emoji: '📦', featured: true },
+  { id: 'individual', name: 'Yogur Individual', desc: 'El sabor puro de la naturaleza en un frasco de 250ml', price: 5, image: '/yogurt-individual.png', featured: false },
+  { id: 'duo', name: 'Dúo de Yogures', desc: 'Ideal para compartir o disfrutar en dos momentos', price: 10, image: '/yogurt-duo.png', featured: false },
+  { id: 'family', name: 'Pack Familiar (Combo 3)', desc: 'Tres yogures variados para toda la familia', price: 13, image: '/yogurt-combo.png', featured: true },
 ]
 
 function ProgressIndicator({ currentStep }) {
@@ -52,7 +52,7 @@ function ProductCard({ product, quantity, onIncrement, onDecrement }) {
     <article className={`product-card ${product.featured ? 'featured' : ''}`}>
       {product.featured && <span className="product-badge">PRECIO ESPECIAL</span>}
       <div className="product-image">
-        <div className="product-placeholder">{product.emoji}</div>
+        <img src={product.image} alt={product.name} className="product-img" />
       </div>
       <div className="product-info">
         <div className="product-header">
