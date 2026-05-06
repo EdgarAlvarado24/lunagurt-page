@@ -30,11 +30,3 @@ npm run dev
 npm run build
 npm run lint
 ```
-
-## Screenshots
-
-![LunaGurt](./screenshot.png)
-
-## Contacto
-
-WhatsApp: 0414-514-5068
