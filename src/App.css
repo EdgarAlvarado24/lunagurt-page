@@ -1,71 +1,4 @@
-:root {
-  --brand-emerald: #0a957d;
-  --brand-emerald-light: #9ABF88;
-  --brand-pink: #d97dad;
-  --primary: #006857;
-  --on-primary: #ffffff;
-  --surface: #f9f9f9;
-  --surface-container-low: #f3f3f4;
-  --surface-container-highest: #e2e2e2;
-  --on-surface: #1a1c1c;
-  --on-surface-variant: #3d4945;
-  --outline: #6d7a75;
-  --outline-variant: #bcc9c4;
-  --error: #ba1a1a;
-  --on-error: #ffffff;
-  
-  --font-display: 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  
-  font: 16px/160% var(--font-body);
-  color: var(--on-surface);
-  background: var(--surface);
-  color-scheme: light;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  font-family: 'Inter', system-ui, sans-serif;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  margin: 0;
-}
-
-p {
-  margin: 0;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-@media (min-width: 768px) {
-  .container {
-    padding: 0 32px;
-  }
-}
+/* App-specific styles - base styles are in index.css */
 
 /* Header */
 .header {
@@ -77,6 +10,11 @@ button {
 .header-icon {
   font-size: 48px;
   margin-bottom: 24px;
+}
+
+.header-icon img {
+  display: inline-block;
+  height: auto;
 }
 
 .header-title {
@@ -220,7 +158,7 @@ button {
   overflow: hidden;
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--outline-variant);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
@@ -324,12 +262,17 @@ button {
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 
-.qty-btn:hover {
+.qty-btn:hover:not(:disabled) {
   border-color: var(--brand-emerald);
   color: var(--brand-emerald);
+}
+
+.qty-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .qty-btn.primary {
@@ -338,7 +281,7 @@ button {
   color: var(--on-primary);
 }
 
-.qty-btn.primary:hover {
+.qty-btn.primary:hover:not(:disabled) {
   background: #097a63;
 }
 
@@ -358,11 +301,12 @@ button {
   border-radius: 999px;
   font-size: 18px;
   font-weight: 700;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease, transform 0.3s ease;
   box-shadow: 0 4px 15px rgba(10, 149, 125, 0.2);
+  border: none;
 }
 
 .btn:disabled {
@@ -373,7 +317,6 @@ button {
 .btn.primary {
   background: var(--brand-emerald);
   color: var(--on-primary);
-  border: none;
 }
 
 .btn.primary:hover:not(:disabled) {
@@ -388,9 +331,10 @@ button {
   background: transparent;
   border: 1px solid var(--outline);
   color: var(--on-surface-variant);
+  box-shadow: none;
 }
 
-.btn.secondary:hover {
+.btn.secondary:hover:not(:disabled) {
   background: var(--surface-container-highest);
 }
 
@@ -455,7 +399,7 @@ button {
   margin-bottom: 16px;
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
   border: 4px solid transparent;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease;
   position: relative;
 }
 
@@ -648,7 +592,13 @@ button {
   border-radius: 999px;
   font-size: 18px;
   font-weight: 700;
+  border: none;
   box-shadow: 0 4px 15px rgba(10, 149, 125, 0.2);
+  transition: filter 0.3s ease;
+}
+
+.modal-btn:hover {
+  filter: brightness(1.1);
 }
 
 /* Footer */
@@ -681,9 +631,16 @@ button {
 }
 
 /* Accessibility */
-button:focus-visible {
+button:focus-visible,
+[role="button"]:focus-visible {
   outline: 2px solid var(--brand-emerald);
   outline-offset: 2px;
+}
+
+.flavor-card:focus-visible {
+  outline: 2px solid var(--brand-emerald);
+  outline-offset: 4px;
+  border-radius: 8px;
 }
 
 @media (prefers-reduced-motion: reduce) {

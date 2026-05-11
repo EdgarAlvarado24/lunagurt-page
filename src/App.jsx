@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, memo } from 'react'
 import './App.css'
 
 const WHATSAPP_NUMBER = '04145145068'
@@ -20,20 +20,20 @@ const PRODUCTS = [
   { id: 'family', name: 'Pack Familiar (Combo 3)', desc: 'Tres yogures variados para toda la familia', price: 13, image: '/yogurt-combo.png', featured: true },
 ]
 
-function ProgressIndicator({ currentStep }) {
-  const steps = [
-    { num: 1, label: 'Pedido' },
-    { num: 2, label: 'Sabores' },
-    { num: 3, label: 'Detalles' },
-  ]
+const STEPS = [
+  { num: 1, label: 'Pedido' },
+  { num: 2, label: 'Sabores' },
+  { num: 3, label: 'Detalles' },
+]
 
+const ProgressIndicator = memo(function ProgressIndicator({ currentStep }) {
   const progressWidth = currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : '100%'
 
   return (
     <div className="progress-container">
       <div className="progress-line" />
       <div className="progress-line-fill" style={{ width: progressWidth }} />
-      {steps.map(step => (
+      {STEPS.map(step => (
         <div key={step.num} className="progress-step">
           <div className={`progress-dot ${currentStep >= step.num ? 'active' : ''} ${currentStep > step.num ? 'completed' : ''}`}>
             {currentStep > step.num ? '✓' : step.num}
@@ -45,14 +45,14 @@ function ProgressIndicator({ currentStep }) {
       ))}
     </div>
   )
-}
+})
 
-function ProductCard({ product, quantity, onIncrement, onDecrement }) {
+const ProductCard = memo(function ProductCard({ product, quantity, onIncrement, onDecrement }) {
   return (
     <article className={`product-card ${product.featured ? 'featured' : ''}`}>
       {product.featured && <span className="product-badge">PRECIO ESPECIAL</span>}
       <div className="product-image">
-        <img src={product.image} alt={product.name} className="product-img" />
+        <img src={product.image} alt={product.name} className="product-img" loading="lazy" width="256" height="256" />
       </div>
       <div className="product-info">
         <div className="product-header">
@@ -62,12 +62,15 @@ function ProductCard({ product, quantity, onIncrement, onDecrement }) {
         <p className="product-desc">{product.desc}</p>
         <div className="quantity-controls">
           <button 
+            type="button"
             className="qty-btn" 
             onClick={onDecrement}
             aria-label={`Decrementar ${product.name}`}
+            disabled={quantity === 0}
           >−</button>
-          <span className="qty-value">{quantity}</span>
+          <span className="qty-value" aria-live="polite">{quantity}</span>
           <button 
+            type="button"
             className="qty-btn primary" 
             onClick={onIncrement}
             aria-label={`Incrementar ${product.name}`}
@@ -76,9 +79,9 @@ function ProductCard({ product, quantity, onIncrement, onDecrement }) {
       </div>
     </article>
   )
-}
+})
 
-function Step1({ quantities, onIncrement, onDecrement, totalYogurts, onContinue }) {
+const Step1 = memo(function Step1({ quantities, onIncrement, onDecrement, totalYogurts, onContinue }) {
   return (
     <section className="section" id="step-1">
       <h2 className="section-title">Selecciona tu Pedido</h2>
@@ -95,6 +98,7 @@ function Step1({ quantities, onIncrement, onDecrement, totalYogurts, onContinue 
       </div>
       <div className="btn-container">
         <button 
+          type="button"
           className="btn primary" 
           onClick={onContinue}
           disabled={totalYogurts === 0}
@@ -104,9 +108,11 @@ function Step1({ quantities, onIncrement, onDecrement, totalYogurts, onContinue 
       </div>
     </section>
   )
-}
+})
 
-function Step2({ totalYogurts, selectedFlavors, onToggleFlavor, onContinue, onBack }) {
+const Step2 = memo(function Step2({ totalYogurts, selectedFlavors, onToggleFlavor, onContinue, onBack }) {
+  const isComplete = selectedFlavors.length === totalYogurts && totalYogurts > 0
+
   return (
     <section className="section" id="step-2">
       <h2 className="section-title">Elige tus Sabores</h2>
@@ -120,7 +126,7 @@ function Step2({ totalYogurts, selectedFlavors, onToggleFlavor, onContinue, onBa
         </p>
       </div>
       
-      <div className="flavor-grid">
+      <div className="flavor-grid" role="group" aria-label="Selección de sabores">
         {FLAVORS.map(flavor => {
           const isSelected = selectedFlavors.includes(flavor.name)
           return (
@@ -131,11 +137,13 @@ function Step2({ totalYogurts, selectedFlavors, onToggleFlavor, onContinue, onBa
               role="button"
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && onToggleFlavor(flavor.name)}
+              aria-pressed={isSelected}
+              aria-label={`Sabor ${flavor.name}`}
             >
               <div className={`flavor-image ${isSelected ? 'selected' : ''}`}>
-                <div className="product-placeholder">{flavor.emoji}</div>
-                <div className="flavor-overlay" />
-                <div className="flavor-check">✓</div>
+                <div className="product-placeholder" aria-hidden="true">{flavor.emoji}</div>
+                <div className="flavor-overlay" aria-hidden="true" />
+                <div className="flavor-check" aria-hidden="true">✓</div>
               </div>
               <h3 className="flavor-name">{flavor.name}</h3>
             </div>
@@ -144,22 +152,23 @@ function Step2({ totalYogurts, selectedFlavors, onToggleFlavor, onContinue, onBa
       </div>
       
       <div className="btn-group">
-        <button className="btn secondary" onClick={onBack}>
+        <button type="button" className="btn secondary" onClick={onBack}>
           Regresar
         </button>
         <button 
+          type="button"
           className="btn primary" 
           onClick={onContinue}
-          disabled={selectedFlavors.length !== totalYogurts || totalYogurts === 0}
+          disabled={!isComplete}
         >
           Continuar →
         </button>
       </div>
     </section>
   )
-}
+})
 
-function Step3({ onSubmit, onBack }) {
+const Step3 = memo(function Step3({ onSubmit, onBack }) {
   const [formData, setFormData] = useState({ name: '', address: '', phone: '' })
   
   const handleChange = useCallback((e) => {
@@ -180,7 +189,7 @@ function Step3({ onSubmit, onBack }) {
         <h2 className="form-title">Detalles del Pedido</h2>
         <p className="form-subtitle">Completa tus datos para que podamos llevarte el sabor del campo.</p>
         
-        <form onSubmit={handleSubmitForm}>
+        <form onSubmit={handleSubmitForm} noValidate>
           <div className="form-group">
             <label className="form-label" htmlFor="name">Nombre Completo *</label>
             <input
@@ -192,6 +201,7 @@ function Step3({ onSubmit, onBack }) {
               value={formData.name}
               onChange={handleChange}
               required
+              autoComplete="name"
             />
           </div>
           
@@ -206,6 +216,7 @@ function Step3({ onSubmit, onBack }) {
               value={formData.address}
               onChange={handleChange}
               required
+              autoComplete="street-address"
             />
           </div>
           
@@ -219,6 +230,7 @@ function Step3({ onSubmit, onBack }) {
               placeholder="Ej. 0414-123-4567"
               value={formData.phone}
               onChange={handleChange}
+              autoComplete="tel"
             />
           </div>
           
@@ -235,29 +247,34 @@ function Step3({ onSubmit, onBack }) {
       </div>
     </section>
   )
-}
+})
 
-function SuccessModal({ isOpen, onClose, formData, quantities, selectedFlavors }) {
+const SuccessModal = memo(function SuccessModal({ isOpen, onClose, formData, selectedFlavors, totalYogurts }) {
   if (!isOpen) return null
   
-  const totalYogurts = quantities.individual + quantities.duo * 2 + quantities.family * 3
   const flavorsList = selectedFlavors.join(', ')
   const summaryText = `Hola ${formData.name}, hemos preparado tu pedido de ${totalYogurts} yogures (${flavorsList}) para ser entregado en ${formData.address}.`
   
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div 
+      className="modal-overlay" 
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div className="modal" onClick={e => e.stopPropagation()}>
-        <div className="modal-icon">🌱</div>
-        <h3 className="modal-title">🍧 ¡Pedido Recibido!</h3>
+        <div className="modal-icon" aria-hidden="true">🌱</div>
+        <h3 id="modal-title" className="modal-title">🍧 ¡Pedido Recibido!</h3>
         <p className="modal-summary">{summaryText}</p>
         <p className="modal-message">¡Gracias por tu pedido LunaGurt! Nos pondremos en contacto pronto.</p>
-        <button className="modal-btn" onClick={onClose}>
+        <button type="button" className="modal-btn" onClick={onClose}>
           Entendido
         </button>
       </div>
     </div>
   )
-}
+})
 
 function App() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -268,6 +285,11 @@ function App() {
   
   const totalYogurts = useMemo(() => 
     quantities.individual + quantities.duo * 2 + quantities.family * 3, 
+    [quantities]
+  )
+
+  const totalPrice = useMemo(() =>
+    quantities.individual * 5 + quantities.duo * 10 + quantities.family * 13,
     [quantities]
   )
   
@@ -297,11 +319,12 @@ function App() {
   }, [])
   
   const handleSubmit = useCallback((formData) => {
-    const message = `🍧 *Nuevo Pedido LunaGurt* %0A%0A*Cliente:* ${formData.name}%0A*Dirección:* ${formData.address}${formData.phone ? '%0A*Teléfono:* ' + formData.phone : ''}%0A%0A*Pedido:*%0A- ${quantities.individual}x Yogur Individual ($${quantities.individual * 5})%0A- ${quantities.duo}x Dúo ($${quantities.duo * 10})%0A- ${quantities.family}x Pack Familiar ($${quantities.family * 13})%0A%0A*Sabores:* ${selectedFlavors.join(', ')}%0A%0A*Total yogures:* ${totalYogurts}%0A*Total:* $${quantities.individual * 5 + quantities.duo * 10 + quantities.family * 13}`
+    const message = `🍧 *Nuevo Pedido LunaGurt* %0A%0A*Cliente:* ${formData.name}%0A*Dirección:* ${formData.address}${formData.phone ? '%0A*Teléfono:* ' + formData.phone : ''}%0A%0A*Pedido:*%0A- ${quantities.individual}x Yogur Individual ($${quantities.individual * 5})%0A- ${quantities.duo}x Dúo ($${quantities.duo * 10})%0A- ${quantities.family}x Pack Familiar ($${quantities.family * 13})%0A%0A*Sabores:* ${selectedFlavors.join(', ')}%0A%0A*Total yogures:* ${totalYogurts}%0A*Total:* $${totalPrice}`
     
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank')
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank', 'noopener,noreferrer')
     setShowModal(true)
-  }, [quantities, selectedFlavors, totalYogurts])
+    setFormData(formData)
+  }, [quantities, selectedFlavors, totalYogurts, totalPrice])
   
   const closeModal = useCallback(() => {
     setShowModal(false)
@@ -314,7 +337,9 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="header-icon"><img width={`128px`} src='converted_lunagurt.svg'/></div>
+        <div className="header-icon">
+          <img width="128" height="128" src="converted_lunagurt.svg" alt="Logo LunaGurt" loading="eager" />
+        </div>
         <h1 className="header-title">Bienvenidos a <span className="text-brand-pink">Luna</span>Gurt</h1>
         <p className="header-subtitle">
           Yogures frescos elaborados con amor y tradición, traídos directamente desde nuestra granja sostenible hasta su mesa.
@@ -352,12 +377,12 @@ function App() {
         )}
       </main>
       
-      <SuccessModal 
+      <SuccessModal
         isOpen={showModal}
         onClose={closeModal}
         formData={formData}
-        quantities={quantities}
         selectedFlavors={selectedFlavors}
+        totalYogurts={totalYogurts}
       />
       
       <footer className="footer">
