@@ -1,6 +1,7 @@
 :root {
   --brand-emerald: #0a957d;
   --brand-emerald-light: #9ABF88;
+  --brand-pink: #d97dad;
   --primary: #006857;
   --on-primary: #ffffff;
   --surface: #f9f9f9;
@@ -12,10 +13,10 @@
   --outline-variant: #bcc9c4;
   --error: #ba1a1a;
   --on-error: #ffffff;
-  
-  --font-display: 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  
+
+  --font-display: 'Playfair Display', 'Inter', system-ui, serif;
+  --font-body: 'DM Sans', 'Inter', system-ui, sans-serif;
+
   font: 16px/160% var(--font-body);
   color: var(--on-surface);
   background: var(--surface);
@@ -30,7 +31,8 @@ body {
   margin: 0;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Inter', system-ui, sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-body);
 }
 
 h1, h2, h3, h4 {
@@ -52,4 +54,16 @@ button {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 32px;
+  }
 }

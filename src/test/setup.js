@@ -1,14 +1,11 @@
 import '@testing-library/jest-dom/vitest'
-import { beforeEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
+import { afterEach, vi } from 'vitest'
 
-// Cleanup after each test
-beforeEach(() => {
+afterEach(() => {
   cleanup()
+  vi.restoreAllMocks()
 })
 
-// Mock window methods before each test
-beforeEach(() => {
-  window.scrollTo = vi.fn()
-  window.open = vi.fn()
-})
+Object.defineProperty(window, 'scrollTo', { value: vi.fn(), writable: true })
+Object.defineProperty(window, 'open', { value: vi.fn(), writable: true })
